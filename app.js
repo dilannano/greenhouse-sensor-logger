@@ -16,6 +16,13 @@
   const inputTemp = document.getElementById("temp");
   const inputHumidity = document.getElementById("humidity");
 
+  const numberFields = [
+    { input: inputPh, label: "pH", min: 0, max: 14, unit: "" },
+    { input: inputEc, label: "EC", min: 0, max: 10, unit: " mS/cm" },
+    { input: inputTemp, label: "Temperature", min: -40, max: 140, unit: " °F" },
+    { input: inputHumidity, label: "Humidity", min: 0, max: 100, unit: "%" },
+  ];
+
   let readings = loadReadings();
 
   function loadReadings() {
@@ -54,5 +61,47 @@
       return { level: "warning", label: "Warning" };
     }
     return { level: "optimal", label: "Optimal" };
+  }
+
+  function validateInputs() {
+    const errors = [];
+
+    if (!inputBay.value) {
+      errors.push("Please select a bay.");
+      inputBay.classList.add("input-invalid");
+    } else {
+      inputBay.classList.remove("input-invalid");
+    }
+
+    numberFields.forEach(function (field) {
+      const value = parseFloat(field.input.value);
+      if (isNaN(value) || value < field.min || value > field.max) {
+        errors.push(
+          `${field.label} must be a number between ${field.min} and ${field.max}${field.unit}.`,
+        );
+        field.input.classList.add("input-invalid");
+      } else {
+        field.input.classList.remove("input-invalid");
+      }
+    });
+
+    return errors;
+  }
+
+  function displayError(messages) {
+    errorMessage.innerHTML = "";
+    const list = document.createElement("ul");
+    messages.forEach(function (message) {
+      const item = document.createElement("li");
+      item.textContent = message;
+      list.appendChild(item);
+    });
+    errorMessage.appendChild(list);
+    errorMessage.classList.remove("hidden");
+  }
+
+  function hideError() {
+    errorMessage.innerHTML = "";
+    errorMessage.classList.add("hidden");
   }
 })();

@@ -23,7 +23,15 @@
     { input: inputHumidity, label: "Humidity", min: 0, max: 100, unit: "%" },
   ];
 
+  const statusLevels = {
+    Optimal: "optimal",
+    Warning: "warning",
+    "Critical Hazard": "critical",
+  };
+
   let readings = loadReadings();
+
+  render();
 
   function loadReadings() {
     try {
@@ -149,7 +157,7 @@
     const humidity = parseFloat(inputHumidity.value);
 
     const reading = {
-      id: String(Date.now()),
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       bay: inputBay.value,
       ph: ph,
       ec: ec,
@@ -164,5 +172,88 @@
 
     sensorForm.reset();
     inputBay.focus();
+    render();
   });
+
+  logList.addEventListener("click", function (event) {
+    if (event.target.classList.contains("btn-delete")) {
+      const readingId = event.target.dataset.id;
+      readings = readings.filter(function (reading) {
+        return reading.id !== readingId;
+      });
+      saveReadings();
+      render();
+    }
+  });
+
+  btnClear.addEventListener("click", function () {
+    if (readings.length === 0) return;
+    if (confirm("Are you sure you want to delete all sensor logs?")) {
+      readings = [];
+      saveReadings();
+      render();
+    }
+  });
+
+  function render() {
+    logCount.textContent = readings.length;
+
+    if (readings.length === 0) {
+      emptyMessage.classList.remove("hidden");
+      logList.innerHTML = "";
+      return;
+    }
+
+    emptyMessage.classList.add("hidden");
+
+    const fragment = document.createDocumentFragment();
+
+    readings.forEach(function (reading) {
+      const level = statusLevels[reading.status] || "optimal";
+
+      const li = document.createElement("li");
+      li.className = "log-card status-" + level;
+
+      const top = document.createElement("div");
+      top.className = "card-top";
+
+      const bay = document.createElement("h3");
+      bay.textContent = reading.bay;
+
+      const tag = document.createElement("span");
+      tag.className = "status-tag " + level;
+      tag.textContent = reading.status;
+
+      top.appendChild(bay);
+      top.appendChild(tag);
+
+      const values = document.createElement("p");
+      values.className = "card-values";
+      values.textContent =
+        "pH " + reading.ph +
+        " · EC " + reading.ec + " mS/cm" +
+        " · " + reading.temp + " °F" +
+        " · " + reading.humidity + "% RH";
+
+      const time = document.createElement("p");
+      time.className = "timestamp";
+      time.textContent = "Recorded " + reading.timestamp;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "btn btn-outline-danger btn-sm btn-delete";
+      deleteButton.dataset.id = reading.id;
+      deleteButton.textContent = "Delete";
+
+      li.appendChild(top);
+      li.appendChild(values);
+      li.appendChild(time);
+      li.appendChild(deleteButton);
+
+      fragment.appendChild(li);
+    });
+
+    logList.innerHTML = "";
+    logList.appendChild(fragment);
+  }
 })();

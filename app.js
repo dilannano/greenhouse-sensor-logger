@@ -4,18 +4,17 @@
   const STORAGE_KEY = "greenlog_sensor_readings_v1";
 
   const sensorForm = document.getElementById("sensor-form");
-  const errorBanner = document.getElementById("form-error-banner");
-  const readingsList = document.getElementById("readings-list");
+  const errorMessage = document.getElementById("error-message");
+  const logList = document.getElementById("log-list");
   const logCount = document.getElementById("log-count");
-  const emptyState = document.getElementById("empty-state");
-  const btnClearAll = document.getElementById("btn-clear-all");
+  const emptyMessage = document.getElementById("empty-message");
+  const btnClear = document.getElementById("btn-clear");
 
-  const inputZone = document.getElementById("zone-name");
-  const inputTemp = document.getElementById("air-temp");
+  const inputBay = document.getElementById("bay");
+  const inputPh = document.getElementById("ph");
+  const inputEc = document.getElementById("ec");
+  const inputTemp = document.getElementById("temp");
   const inputHumidity = document.getElementById("humidity");
-  const inputPh = document.getElementById("soil-ph");
-  const inputEc = document.getElementById("soil-ec");
-  const inputMoisture = document.getElementById("soil-moisture");
 
   let readings = loadReadings();
 

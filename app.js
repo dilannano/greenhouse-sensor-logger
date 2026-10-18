@@ -104,4 +104,65 @@
     errorMessage.innerHTML = "";
     errorMessage.classList.add("hidden");
   }
+
+  sensorForm.addEventListener("input", function (event) {
+    const field = numberFields.find(function (item) {
+      return item.input === event.target;
+    });
+
+    if (field) {
+      const value = parseFloat(field.input.value);
+      const outOfRange =
+        field.input.value !== "" &&
+        (isNaN(value) || value < field.min || value > field.max);
+      field.input.classList.toggle("input-invalid", outOfRange);
+    }
+
+    if (event.target === inputBay && inputBay.value) {
+      inputBay.classList.remove("input-invalid");
+    }
+
+    if (!errorMessage.classList.contains("hidden")) {
+      const errors = validateInputs();
+      if (errors.length > 0) {
+        displayError(errors);
+      } else {
+        hideError();
+      }
+    }
+  });
+
+  sensorForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const errors = validateInputs();
+    if (errors.length > 0) {
+      displayError(errors);
+      return;
+    }
+
+    hideError();
+
+    const ph = parseFloat(inputPh.value);
+    const ec = parseFloat(inputEc.value);
+    const temp = parseFloat(inputTemp.value);
+    const humidity = parseFloat(inputHumidity.value);
+
+    const reading = {
+      id: String(Date.now()),
+      bay: inputBay.value,
+      ph: ph,
+      ec: ec,
+      temp: temp,
+      humidity: humidity,
+      status: evaluateStatus(ph, ec, temp, humidity).label,
+      timestamp: new Date().toLocaleString(),
+    };
+
+    readings.unshift(reading);
+    saveReadings();
+
+    sensorForm.reset();
+    inputBay.focus();
+  });
 })();

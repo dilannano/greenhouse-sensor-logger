@@ -136,12 +136,26 @@
       </aside>
 
       <section class="panel log-panel">
-        <h2 class="panel-title">Reading Log</h2>
+        <div class="log-header">
+          <h2 class="panel-title">Reading Log</h2>
+          <button id="btn-clear-all" class="btn btn-outline-danger btn-sm">
+            Clear Log
+          </button>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <span class="empty-icon">🪴</span>
+          <p>No sensor readings logged yet.</p>
+        </div>
+
+        <ul id="readings-list" class="readings-grid" aria-live="polite"></ul>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>&copy; 2026 GreenLog Greenhouse Monitoring</p>
     </footer>
+
+    <script src="app.js"></script>
   </body>
 </html>

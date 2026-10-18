@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GreenLog Sensor Dashboard</title>
+    <title>Greenhouse Sensor Logger</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -11,53 +11,87 @@
       <div class="header-inner">
         <div class="brand">
           <span class="brand-icon">🌱</span>
-          <h1>GreenLog <span class="brand-sub">Greenhouse Sensor Logger</span></h1>
+          <h1>Greenhouse Sensor Logger</h1>
         </div>
-        <div class="header-status">
-          Logged Readings: <span id="log-count" class="count-badge">0</span>
-        </div>
+        <p class="header-status">
+          Total Logs: <span id="log-count" class="count-badge">0</span>
+        </p>
       </div>
     </header>
 
     <main class="dashboard">
-      <aside class="panel form-panel">
-        <h2 class="panel-title">New Sensor Reading</h2>
+      <section class="panel form-panel">
+        <h2 class="panel-title">Record Sensor Reading</h2>
 
         <div
-          id="form-error-banner"
+          id="error-message"
           class="alert alert-error hidden"
           role="alert"
         ></div>
 
         <form action="#" id="sensor-form" novalidate>
           <div class="form-group">
-            <label for="zone-name" class="form-label"
-              >Zone / Bed Name <span class="required">*</span></label
+            <label for="bay" class="form-label"
+              >Bay <span class="required">*</span></label
             >
-            <input
-              type="text"
-              name="zone-name"
-              id="zone-name"
-              class="form-control"
-              placeholder="e.g. Tomato Bed A"
-              required
-            />
+            <select id="bay" name="bay" class="form-control" required>
+              <option value="" selected disabled>Select a bay</option>
+              <option value="Bay 1">Bay 1</option>
+              <option value="Bay 2">Bay 2</option>
+              <option value="Bay 3">Bay 3</option>
+              <option value="Bay 4">Bay 4</option>
+            </select>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="air-temp" class="form-label"
-                >Air Temp (°C) <span class="required">*</span></label
+              <label for="ph" class="form-label"
+                >pH <span class="required">*</span></label
               >
               <input
                 type="number"
-                name="air-temp"
-                id="air-temp"
+                name="ph"
+                id="ph"
                 class="form-control"
-                min="-10"
-                max="50"
+                min="0"
+                max="14"
                 step="0.1"
-                placeholder="24"
+                placeholder="6.0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="ec" class="form-label"
+                >EC (mS/cm) <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                name="ec"
+                id="ec"
+                class="form-control"
+                min="0"
+                max="10"
+                step="0.1"
+                placeholder="1.5"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="temp" class="form-label"
+                >Temp (°F) <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                name="temp"
+                id="temp"
+                class="form-control"
+                min="-40"
+                max="140"
+                step="0.1"
+                placeholder="68"
                 required
               />
             </div>
@@ -72,88 +106,35 @@
                 class="form-control"
                 min="0"
                 max="100"
-                placeholder="65"
+                step="1"
+                placeholder="60"
                 required
               />
             </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="soil-ph" class="form-label"
-                >Soil pH <span class="required">*</span></label
-              >
-              <input
-                type="number"
-                name="soil-ph"
-                id="soil-ph"
-                class="form-control"
-                min="0"
-                max="14"
-                step="0.1"
-                placeholder="6.2"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="soil-ec" class="form-label"
-                >EC (mS/cm) <span class="required">*</span></label
-              >
-              <input
-                type="number"
-                name="soil-ec"
-                id="soil-ec"
-                class="form-control"
-                min="0"
-                max="10"
-                step="0.1"
-                placeholder="1.8"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="soil-moisture" class="form-label"
-              >Soil Moisture (%) <span class="required">*</span></label
-            >
-            <input
-              type="number"
-              name="soil-moisture"
-              id="soil-moisture"
-              class="form-control"
-              min="0"
-              max="100"
-              placeholder="40"
-              required
-            />
           </div>
 
           <button type="submit" id="btn-submit" class="btn btn-primary btn-block">
-            Log Sensor Reading
+            Record Reading
           </button>
         </form>
-      </aside>
+      </section>
 
       <section class="panel log-panel">
         <div class="log-header">
-          <h2 class="panel-title">Reading Log</h2>
-          <button id="btn-clear-all" class="btn btn-outline-danger btn-sm">
-            Clear Log
+          <h2 class="panel-title">Sensor Logs</h2>
+          <button id="btn-clear" class="btn btn-outline-danger btn-sm">
+            Clear All
           </button>
         </div>
 
-        <div id="empty-state" class="empty-state">
-          <span class="empty-icon">🪴</span>
-          <p>No sensor readings logged yet.</p>
-        </div>
+        <p id="empty-message" class="empty-state">No readings yet.</p>
 
-        <ul id="readings-list" class="readings-grid" aria-live="polite"></ul>
+        <ul id="log-list" class="readings-grid" aria-live="polite"></ul>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>&copy; 2026 GreenLog Greenhouse Monitoring</p>
+      <p>CSI 3150 Assignment 2</p>
     </footer>
 
     <script src="app.js"></script>

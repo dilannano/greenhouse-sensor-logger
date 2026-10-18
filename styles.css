@@ -33,3 +33,22 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.site-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  padding: 2rem;
+  flex: 1;
+}

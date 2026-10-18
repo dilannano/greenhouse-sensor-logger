@@ -35,4 +35,24 @@
       console.error("Failed to save readings to storage", error);
     }
   }
+
+  function evaluateStatus(ph, ec, temp, humidity) {
+    if (
+      ph < 5 || ph > 7 ||
+      ec < 0.5 || ec > 3.5 ||
+      temp < 55 || temp > 90 ||
+      humidity < 40 || humidity > 80
+    ) {
+      return { level: "critical", label: "Critical Hazard" };
+    }
+    if (
+      ph < 5.5 || ph > 6.5 ||
+      ec < 1 || ec > 2.5 ||
+      temp < 65 || temp > 80 ||
+      humidity < 50 || humidity > 70
+    ) {
+      return { level: "warning", label: "Warning" };
+    }
+    return { level: "optimal", label: "Optimal" };
+  }
 })();
